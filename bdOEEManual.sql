@@ -15,8 +15,7 @@ INSERT INTO produto VALUES
 (NULL, 'PARACETAMOL', '50037'),
 (NULL, 'EXPEC', '1090');
 
-SELECT * 
-FROM produto;
+-- SELECT * FROM produto;
 
 DROP TABLE IF EXISTS maquina;
 CREATE TABLE IF NOT EXISTS maquina(
@@ -31,8 +30,7 @@ INSERT INTO maquina VALUES
 (NULL, 'CAM 2', 'EBS-ECT-02', FALSE),
 (NULL, 'COP 10', 'MAS-COP-10', FALSE);
 
-SELECT * 
-FROM maquina;
+-- SELECT * FROM maquina;
 
 CREATE TABLE IF NOT EXISTS estrutura(
 	idProduto INT NOT NULL,
@@ -58,3 +56,19 @@ SELECT
 FROM produto AS p
 INNER JOIN estrutura AS e ON p.id = e.idProduto
 INNER JOIN maquina AS m ON e.idMaquina = m.id;
+
+DROP TABLE IF EXISTS tipo_apontamento;
+CREATE TABLE IF NOT EXISTS tipo_apontamento(
+	id INT AUTO_INCREMENT,
+    descricao VARCHAR(255) NOT NULL,
+    codigo CHAR(4) UNIQUE NOT NULL,
+    areaResponsavel VARCHAR(255) NOT NULL,
+    podeAlterar BOOLEAN,
+    PRIMARY KEY(id)
+    -- REQUER ASSINATURA?
+    -- FLAGS QUE AFETAM O OEE REAL/EFETIVO
+);
+
+INSERT INTO tipo_apontamento VALUES
+(NULL, 'PRODUÇÃO', '1', 'PRODUÇÃO', 0),
+(NULL, 'MANUTENÇÃO PREVENTIVA', '2', 'MANUTENÇÃO', 1);
