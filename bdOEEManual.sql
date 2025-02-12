@@ -1,11 +1,34 @@
 CREATE DATABASE IF NOT EXISTS oeemanual;
 USE oeemanual;
 
-CREATE TABLE produto(
-	id MEDIUMINT(10000000) AUTO_INCREMENT,
-    descricao VARCHAR(255),
-    codigo CHAR(7) UNIQUE,
-    velocidade DOUBLE(10,3),
-    batelada BOOL,
+DROP TABLE IF EXISTS produto;
+CREATE TABLE IF NOT EXISTS produto(
+	id INT(255) AUTO_INCREMENT,
+    descricao VARCHAR(255) NOT NULL,
+    codigo CHAR(7) UNIQUE NOT NULL,
     PRIMARY KEY(id)
 );
+
+INSERT INTO produto VALUES
+(NULL, 'PARACETAMOL', '50037'),
+(NULL, 'EXPEC', '1090');
+
+SELECT * 
+FROM produto;
+
+DROP TABLE IF EXISTS equipamento;
+CREATE TABLE IF NOT EXISTS equipamento(
+	id INT(255) AUTO_INCREMENT,
+    descricao VARCHAR(255) NOT NULL,
+    tag CHAR(11) NOT NULL,
+    batelada BOOLEAN,
+    PRIMARY KEY(id)
+);
+
+INSERT INTO equipamento VALUES
+(NULL, 'CAM 2', 'EBS-ECT-02', FALSE),
+(NULL, 'COP 10', 'MAS-COP-10', FALSE);
+
+SELECT * 
+FROM equipamento;
+
