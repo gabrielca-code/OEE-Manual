@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS oeemanual;
 USE oeemanual;
 
+DROP TABLE IF EXISTS maquina_apontamento;
 DROP TABLE IF EXISTS estrutura;
 
 DROP TABLE IF EXISTS produto;
@@ -71,4 +72,29 @@ CREATE TABLE IF NOT EXISTS tipo_apontamento(
 
 INSERT INTO tipo_apontamento VALUES
 (NULL, 'PRODUÇÃO', '1', 'PRODUÇÃO', 0),
-(NULL, 'MANUTENÇÃO PREVENTIVA', '2', 'MANUTENÇÃO', 1);
+(NULL, 'MANUTENÇÃO PREVENTIVA', '2', 'MANUTENÇÃO', 1),
+(NULL, 'AJUSTE - DOBRADOR DE BULA', '3', 'PRODUÇÃO', 1);
+
+CREATE TABLE IF NOT EXISTS maquina_apontamento(
+	idMaquina INT NOT NULL,
+    idTipoApontamento INT NOT NULL,
+    FOREIGN KEY (idMaquina) REFERENCES maquina (id),
+    FOREIGN KEY (idTipoApontamento) REFERENCES tipo_apontamento (id),
+    PRIMARY KEY(idMaquina, idTipoApontamento)
+);
+
+INSERT INTO maquina_apontamento VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 2);
+
+SELECT 
+	m.descricao AS nomeMaquina,
+	ta.descricao AS descricaoApontamento,
+    ta.codigo AS codigoApontamento
+FROM maquina AS m
+INNER JOIN maquina_apontamento AS ma ON ma.idMaquina = m.id
+INNER JOIN tipo_apontamento AS ta ON ma.idTipoApontamento = ta.id
+ORDER BY nomeMaquina ASC, descricaoApontamento ASC;
