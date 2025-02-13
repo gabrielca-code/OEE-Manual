@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS oeemanual;
 USE oeemanual;
 
+DROP TABLE IF EXISTS ordem_producao;
+DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS maquina_apontamento;
 DROP TABLE IF EXISTS estrutura;
 
@@ -98,3 +100,42 @@ FROM maquina AS m
 INNER JOIN maquina_apontamento AS ma ON ma.idMaquina = m.id
 INNER JOIN tipo_apontamento AS ta ON ma.idTipoApontamento = ta.id
 ORDER BY nomeMaquina ASC, descricaoApontamento ASC;
+
+CREATE TABLE IF NOT EXISTS usuario(
+	matricula VARCHAR(10),
+    usuario VARCHAR(30) NOT NULL UNIQUE, 
+    senha VARCHAR(30) NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    PRIMARY KEY (matricula)
+);
+
+INSERT INTO usuario VALUES
+('99999', 'gabrielca', 'senha123', 'Gabriel de Carvalho Antunes'),
+('98760', 'fulano', 'senha123', 'Fulano da Silva'),
+('12345', 'beltrano', 'senha123', 'Beltrano Nogueira');
+
+SELECT * FROM usuario;
+
+CREATE TABLE IF NOT EXISTS ordem_producao(
+    numero_op VARCHAR(10) NOT NULL,
+    idMaquina INT NOT NULL,
+    idProduto INT NOT NULL,
+    data_inicio DATETIME DEFAULT NULL,
+    data_fim DATETIME DEFAULT NULL,
+    quantidade_planejada INT NOT NULL,
+    quantidade_realizada INT NOT NULL DEFAULT 0,
+    tempo_hipotetico DOUBLE(4,3) NOT NULL DEFAULT 0,
+    idUsuario VARCHAR(10) NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES usuario (matricula),
+    FOREIGN KEY (idMaquina, idProduto) REFERENCES estrutura (idMaquina, idProduto),
+    PRIMARY KEY (numero_op, idMaquina, idProduto)
+);
+
+INSERT INTO ordem_producao(numero_op, idMaquina, idProduto, quantidade_planejada, idUsuario) VALUES
+('7776669', 1, 1, 100000, '99999');
+
+SELECT * FROM ordem_producao;
+
+-- query inner joins
+
+-- tabela lançamentos
