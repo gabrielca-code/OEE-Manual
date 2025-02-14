@@ -152,6 +152,16 @@ FROM ordem_producao AS op
 INNER JOIN usuario AS u ON u.matricula = op.idUsuario
 INNER JOIN estrutura AS e ON e.idMaquina = op.idMaquina AND e.idProduto = op.idMaquina
 INNER JOIN maquina AS m ON m.id = e.idMaquina
-INNER JOIN produto AS p ON p.id = e.idProduto
+INNER JOIN produto AS p ON p.id = e.idProduto;
 
--- tabela lançamentos
+CREATE TABLE IF NOT EXISTS lancamentos(
+	id INT AUTO_INCREMENT,
+    idOP INT NOT NULL,
+    idTipoApontamento INT NOT NULL,
+    data_inicio DATETIME NOT NULL,
+    data_fim DATETIME DEFAULT NULL,
+    idUsuario VARCHAR(10) NOT NULL
+    -- chave primary
+    -- chaves secundarias
+    -- adicionar ID OP
+);
