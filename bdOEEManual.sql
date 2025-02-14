@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS oeemanual;
 USE oeemanual;
 
+DROP TABLE IF EXISTS lancamento;
 DROP TABLE IF EXISTS ordem_producao;
 DROP TABLE IF EXISTS usuario;
 DROP TABLE IF EXISTS maquina_apontamento;
@@ -117,6 +118,7 @@ INSERT INTO usuario VALUES
 SELECT * FROM usuario;
 
 CREATE TABLE IF NOT EXISTS ordem_producao(
+	id INT AUTO_INCREMENT,
     numero_op VARCHAR(10) NOT NULL,
     idMaquina INT NOT NULL,
     idProduto INT NOT NULL,
@@ -128,7 +130,7 @@ CREATE TABLE IF NOT EXISTS ordem_producao(
     idUsuario VARCHAR(10) NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES usuario (matricula),
     FOREIGN KEY (idMaquina, idProduto) REFERENCES estrutura (idMaquina, idProduto),
-    PRIMARY KEY (numero_op, idMaquina, idProduto)
+    PRIMARY KEY (id)
 );
 
 INSERT INTO ordem_producao(numero_op, idMaquina, idProduto, quantidade_planejada, idUsuario) VALUES
@@ -140,8 +142,8 @@ SELECT
 	op.numero_op AS OP,
     m.descricao AS Maquina,
     m.tag AS TagMaquina,
-    p.codigo AS CodProduto,
-    p.descricao AS DescProduto,
+    p.codigo AS CodigoProduto,
+    p.descricao AS DescricaoProduto,
     op.data_inicio AS Inicio,
     op.data_fim AS Fim,
     op.quantidade_planejada AS QtdPlanejada,
@@ -154,14 +156,33 @@ INNER JOIN estrutura AS e ON e.idMaquina = op.idMaquina AND e.idProduto = op.idM
 INNER JOIN maquina AS m ON m.id = e.idMaquina
 INNER JOIN produto AS p ON p.id = e.idProduto;
 
-CREATE TABLE IF NOT EXISTS lancamentos(
-	id INT AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS lancamento(
     idOP INT NOT NULL,
     idTipoApontamento INT NOT NULL,
     data_inicio DATETIME NOT NULL,
     data_fim DATETIME DEFAULT NULL,
-    idUsuario VARCHAR(10) NOT NULL
-    -- chave primary
-    -- chaves secundarias
-    -- adicionar ID OP
+    idUsuario VARCHAR(10) NOT NULL,
+	PRIMARY KEY (idOP, data_inicio),
+    FOREIGN KEY (idOP) REFERENCES ordem_producao (id),
+    FOREIGN KEY (idUsuario) REFERENCES usuario (matricula)
 );
+
+INSERT INTO lancamento (idOP, idTipoApontamento, data_inicio, idUsuario) VALUES
+(1, 1, '2024-02-13 10:00', '99999');
+
+SELECT 
+	op.numero_op AS OP,
+    m.descricao AS NomeMaquina,
+    m.tag AS TagMaquina,
+    p.codigo AS CodigoProduto,
+    p.descricao AS DescricaoProduto,
+    l.data_inicio AS InicioLancamento,
+    l.data_fim AS FimLancamento,
+    u.matricula AS MatriculaUsario,
+    u.nome AS NomeUsuario
+FROM lancamento AS l
+INNER JOIN ordem_producao AS op ON l.idOP = op.id
+INNER JOIN estrutura AS e ON op.idMaquina = e.idMaquina AND op.idProduto = e.idProduto
+INNER JOIN maquina AS m ON m.id = e.idMaquina
+INNER JOIN produto AS p ON p.id = e.idProduto
+INNER JOIN usuario AS u ON l.idUsuario = u.matricula
