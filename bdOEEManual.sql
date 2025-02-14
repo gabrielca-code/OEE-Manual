@@ -136,6 +136,22 @@ INSERT INTO ordem_producao(numero_op, idMaquina, idProduto, quantidade_planejada
 
 SELECT * FROM ordem_producao;
 
--- query inner joins
+SELECT 
+	op.numero_op AS OP,
+    m.descricao AS Maquina,
+    m.tag AS TagMaquina,
+    p.codigo AS CodProduto,
+    p.descricao AS DescProduto,
+    op.data_inicio AS Inicio,
+    op.data_fim AS Fim,
+    op.quantidade_planejada AS QtdPlanejada,
+    op.quantidade_realizada AS QtdRealizada,
+    u.matricula AS MatriculaUsuario,
+    u.nome AS NomeUsuario
+FROM ordem_producao AS op
+INNER JOIN usuario AS u ON u.matricula = op.idUsuario
+INNER JOIN estrutura AS e ON e.idMaquina = op.idMaquina AND e.idProduto = op.idMaquina
+INNER JOIN maquina AS m ON m.id = e.idMaquina
+INNER JOIN produto AS p ON p.id = e.idProduto
 
 -- tabela lançamentos
