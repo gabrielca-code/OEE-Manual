@@ -19,14 +19,12 @@ INSERT INTO produto VALUES
 (NULL, 'PARACETAMOL', '50037'),
 (NULL, 'EXPEC', '1090');
 
--- SELECT * FROM produto;
-
 DROP TABLE IF EXISTS maquina;
 CREATE TABLE IF NOT EXISTS maquina(
 	id INT AUTO_INCREMENT,
     descricao VARCHAR(255) NOT NULL,
     tag CHAR(11) NOT NULL,
-    batelada BOOLEAN,
+    batelada BOOLEAN DEFAULT FALSE,
     PRIMARY KEY(id)
 );
 
@@ -67,16 +65,16 @@ CREATE TABLE IF NOT EXISTS tipo_apontamento(
     descricao VARCHAR(255) NOT NULL,
     codigo CHAR(4) UNIQUE NOT NULL,
     areaResponsavel VARCHAR(255) NOT NULL,
-    podeAlterar BOOLEAN,
+    podeAlterar BOOLEAN DEFAULT TRUE,
+    requerAssinatura BOOLEAN DEFAULT FALSE,
+    afetaOEEEfetivo BOOLEAN DEFAULT TRUE,    
     PRIMARY KEY(id)
-    -- REQUER ASSINATURA?
-    -- FLAGS QUE AFETAM O OEE REAL/EFETIVO
 );
 
 INSERT INTO tipo_apontamento VALUES
-(NULL, 'PRODUÇÃO', '1', 'PRODUÇÃO', 0),
-(NULL, 'MANUTENÇÃO PREVENTIVA', '2', 'MANUTENÇÃO', 1),
-(NULL, 'AJUSTE - DOBRADOR DE BULA', '3', 'PRODUÇÃO', 1);
+(NULL, 'PRODUÇÃO', '1', 'PRODUÇÃO', 0, false, true),
+(NULL, 'MANUTENÇÃO PREVENTIVA', '2', 'MANUTENÇÃO', 1, true, false),
+(NULL, 'AJUSTE - DOBRADOR DE BULA', '3', 'PRODUÇÃO', 1, false, true);
 
 CREATE TABLE IF NOT EXISTS maquina_apontamento(
 	idMaquina INT NOT NULL,
@@ -115,8 +113,6 @@ INSERT INTO usuario VALUES
 ('98760', 'fulano', 'senha123', 'Fulano da Silva'),
 ('12345', 'beltrano', 'senha123', 'Beltrano Nogueira');
 
-SELECT * FROM usuario;
-
 CREATE TABLE IF NOT EXISTS ordem_producao(
 	id INT AUTO_INCREMENT,
     numero_op VARCHAR(10) NOT NULL,
@@ -130,7 +126,8 @@ CREATE TABLE IF NOT EXISTS ordem_producao(
     idUsuario VARCHAR(10) NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES usuario (matricula),
     FOREIGN KEY (idMaquina, idProduto) REFERENCES estrutura (idMaquina, idProduto),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT CHK_quantidadePlanejada CHECK (quantidade_planejada > 0)
 );
 
 INSERT INTO ordem_producao(numero_op, idMaquina, idProduto, quantidade_planejada, idUsuario) VALUES
