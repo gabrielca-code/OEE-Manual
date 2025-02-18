@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS produto(
     PRIMARY KEY(id)
 );
 
+select * from produto;
+
 INSERT INTO produto VALUES
 (NULL, 'PARACETAMOL', '50037'),
 (NULL, 'EXPEC', '1090');
