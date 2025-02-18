@@ -25,11 +25,11 @@ public class ProdutoController {
     @PostMapping
     @Transactional
     public ResponseEntity listar2(@RequestBody @Valid ProdutoCadastroDTO dados, UriComponentsBuilder uriBuilder) {
-        Produto p = new Produto(dados);
+        var p = new Produto(dados);
         produtoRepository.save(p);
 
-        //var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(p.getId()).toUri(); //created and return object
-        return ResponseEntity.ok(p);//created().body(p);
+        var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(p.getId()).toUri(); //created and return object
+        return ResponseEntity.created(uri).body(p);
     }
 
 }

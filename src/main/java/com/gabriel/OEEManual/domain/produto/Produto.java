@@ -22,4 +22,15 @@ public class Produto {
         this.codigo = dados.codigo();
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getDescricao() {
+        return this.descricao;
+    }
+
+    public String getCodigo() {
+        return this.codigo;
+    }
 }
