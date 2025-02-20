@@ -1,7 +1,4 @@
-package com.gabriel.OEEManual.controller.produto;
-
-import com.gabriel.OEEManual.domain.produto.Produto;
-import jakarta.validation.constraints.NotBlank;
+package com.gabriel.OEEManual.domain.produto;
 
 public record ProdutoListarItemDTO(
         Long id,

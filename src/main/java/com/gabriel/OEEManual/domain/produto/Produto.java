@@ -40,4 +40,9 @@ public class Produto {
     public String getCodigo() {
         return this.codigo;
     }
+
+    public void editarProduto(ProdutoEditarDTO dados) {
+        this.descricao = dados.descricao();
+        this.codigo = dados.codigo();
+    }
 }
