@@ -17,9 +17,15 @@ public class ProdutoController {
     private ProdutoRepository produtoRepository;
 
     @GetMapping
-    public ResponseEntity<String> listar() {
+    public ResponseEntity listar() {
         System.out.println("OK");
         return ResponseEntity.ok("teste");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity listarItem(@PathVariable Long id) {
+        var produto = produtoRepository.getReferenceById(id);
+        return ResponseEntity.ok(new ProdutoListarItemDTO(produto));
     }
 
     @PostMapping
@@ -29,7 +35,7 @@ public class ProdutoController {
         produtoRepository.save(p);
 
         var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(p.getId()).toUri(); //created and return object
-        return ResponseEntity.created(uri).body(p);
+        return ResponseEntity.created(uri).body(new ProdutoListarItemDTO(p));
     }
 
 }

@@ -3,11 +3,10 @@ package com.gabriel.OEEManual.domain.produto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity(name = "Produto")
 @Table(name = "produto")
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Produto {
 
@@ -16,6 +15,14 @@ public class Produto {
     private Long id;
     private String descricao;
     private String codigo;
+
+    public Produto() {}
+
+    public Produto(Long id, String descricao, String codigo) {
+        this.id = id;
+        this.descricao = descricao;
+        this.codigo = codigo;
+    }
 
     public Produto(ProdutoCadastroDTO dados) {
         this.descricao = dados.descricao();
