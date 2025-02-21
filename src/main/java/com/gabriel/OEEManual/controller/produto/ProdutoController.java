@@ -47,11 +47,18 @@ public class ProdutoController {
     @Transactional
     public ResponseEntity editarProduto(@RequestBody @Valid ProdutoEditarDTO dados) {
         var produto = produtoRepository.getReferenceById(dados.id());
-        produto.editarProduto(dados);
+        produto.editarProduto(dados); //PODER MANDAR APENAS CAMPOS ESPECIFICOS NO PUT
 
         return ResponseEntity.ok(new ProdutoListarItemDTO(produto));
     }
 
-    
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity desativarProduto(@PathVariable Long id) {
+        var produto = produtoRepository.getReferenceById(id);
+        produto.desativarProduto(id);
+
+        return ResponseEntity.noContent().build();
+    }
 
 }

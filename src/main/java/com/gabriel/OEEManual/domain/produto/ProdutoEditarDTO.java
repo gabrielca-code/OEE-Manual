@@ -9,7 +9,9 @@ public record ProdutoEditarDTO(
         @NotBlank
         String descricao,
         @NotBlank
-        String codigo
+        String codigo,
+        @NotNull
+        boolean ativo
 ) {
 
 }

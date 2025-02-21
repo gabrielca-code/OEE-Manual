@@ -15,6 +15,7 @@ public class Produto {
     private Long id;
     private String descricao;
     private String codigo;
+    private boolean ativo;
 
     public Produto() {}
 
@@ -27,6 +28,7 @@ public class Produto {
     public Produto(ProdutoCadastroDTO dados) {
         this.descricao = dados.descricao();
         this.codigo = dados.codigo();
+        this.ativo = true;
     }
 
     public Long getId() {
@@ -41,8 +43,17 @@ public class Produto {
         return this.codigo;
     }
 
+    public boolean getAtivo() {
+        return this.ativo;
+    }
+
     public void editarProduto(ProdutoEditarDTO dados) {
         this.descricao = dados.descricao();
         this.codigo = dados.codigo();
+        this.ativo = dados.ativo();
+    }
+
+    public void desativarProduto(Long id) {
+        this.ativo = false;
     }
 }
