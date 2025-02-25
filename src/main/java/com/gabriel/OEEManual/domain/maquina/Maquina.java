@@ -23,6 +23,13 @@ public class Maquina {
         this.ativo = true;
     }
 
+    public Maquina(MaquinaCadastroDTO dados) {
+        this.descricao = dados.descricao();
+        this.tag = dados.tag();
+        this.batelada = dados.batelada();
+        this.ativo = dados.ativo();
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -43,4 +50,10 @@ public class Maquina {
         return this.ativo;
     }
 
+    public void editarMaquina(MaquinaEditarDTO dados) {
+        this.descricao = dados.descricao();
+        this.tag = dados.tag();
+        this.batelada = dados.batelada();
+        this.ativo = dados.ativo();
+    }
 }

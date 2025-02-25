@@ -43,7 +43,7 @@ public class ProdutoController {
         return ResponseEntity.created(uri).body(new ProdutoListarItemDTO(p));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping //validar se precisa mesmo do pathVariable
     @Transactional
     public ResponseEntity editarProduto(@RequestBody @Valid ProdutoEditarDTO dados) {
         var produto = produtoRepository.getReferenceById(dados.id());
