@@ -17,6 +17,23 @@ public class Estrutura {
     private EstruturaID estruturaID;
     private double velocidade;
 
-    
+    public Estrutura() {}
+
+    public Estrutura(Produto produto, Maquina maquina, double velocidade) {
+        this.estruturaID = new EstruturaID(produto, maquina);
+        this.velocidade = velocidade;
+    }
+
+    public Produto getProduto() {
+        return this.estruturaID.getProduto();
+    }
+
+    public Maquina getMaquina() {
+        return this.estruturaID.getMaquina();
+    }
+
+    public double getVelocidade() {
+        return this.velocidade;
+    }
 
 }
