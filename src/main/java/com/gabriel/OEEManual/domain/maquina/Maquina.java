@@ -56,4 +56,8 @@ public class Maquina {
         this.batelada = dados.batelada();
         this.ativo = dados.ativo();
     }
+
+    public void desativarMaquina() {
+        this.ativo = false;
+    }
 }

@@ -8,6 +8,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,9 @@ public class MaquinaController {
     private MaquinaRepository maquinaRepository;
 
     @GetMapping
-    public ResponseEntity listarMaquinas() {
-        return null;
+    public ResponseEntity<Page<MaquinaListarItemDTO>> listarMaquinas(@PageableDefault(size = 10, sort = {"tag"}) Pageable paginacao) {
+        var paginar = maquinaRepository.findAll(paginacao).map(MaquinaListarItemDTO::new);
+        return ResponseEntity.ok(paginar);
     }
 
     @GetMapping("/{id}")
@@ -54,8 +58,11 @@ public class MaquinaController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity desativarMaquina() {
-        return null;
+    public ResponseEntity desativarMaquina(@PathVariable Long id) {
+        var maquina = maquinaRepository.getReferenceById(id);
+        maquina.desativarMaquina();
+
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -56,7 +56,7 @@ public class ProdutoController {
     @Transactional
     public ResponseEntity desativarProduto(@PathVariable Long id) {
         var produto = produtoRepository.getReferenceById(id);
-        produto.desativarProduto(id);
+        produto.desativarProduto();
 
         return ResponseEntity.noContent().build();
     }

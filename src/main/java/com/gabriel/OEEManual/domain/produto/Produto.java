@@ -53,7 +53,7 @@ public class Produto {
         this.ativo = dados.ativo();
     }
 
-    public void desativarProduto(Long id) {
+    public void desativarProduto() {
         this.ativo = false;
     }
 }
