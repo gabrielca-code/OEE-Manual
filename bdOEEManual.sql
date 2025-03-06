@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS estrutura;
 
 DROP TABLE IF EXISTS produto;
 CREATE TABLE IF NOT EXISTS produto(
-	id INT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT,
     descricao VARCHAR(255) NOT NULL,
     codigo CHAR(7) UNIQUE NOT NULL,
     CONSTRAINT PrimaryKeyProduto PRIMARY KEY(id)
@@ -25,7 +25,7 @@ INSERT INTO produto VALUES
 
 DROP TABLE IF EXISTS maquina;
 CREATE TABLE IF NOT EXISTS maquina(
-	id INT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT,
     descricao VARCHAR(255) NOT NULL,
     tag CHAR(11) NOT NULL,
     batelada BOOLEAN DEFAULT FALSE,
@@ -41,9 +41,9 @@ INSERT INTO maquina VALUES
 SELECT * FROM maquina;
 
 CREATE TABLE IF NOT EXISTS estrutura(
-	id INT AUTO_INCREMENT,
-	idProduto INT NOT NULL,
-    idMaquina INT NOT NULL,
+	id BIGINT AUTO_INCREMENT,
+	idProduto BIGINT NOT NULL,
+    idMaquina BIGINT NOT NULL,
     velocidade DOUBLE(11,3) NOT NULL,
     FOREIGN KEY (idProduto) REFERENCES produto (id),
     FOREIGN KEY (idMaquina) REFERENCES maquina (id),
@@ -69,7 +69,7 @@ INNER JOIN maquina AS m ON e.idMaquina = m.id;
 
 DROP TABLE IF EXISTS tipo_apontamento;
 CREATE TABLE IF NOT EXISTS tipo_apontamento(
-	id INT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT,
     descricao VARCHAR(255) NOT NULL,
     codigo CHAR(4) UNIQUE NOT NULL,
     areaResponsavel VARCHAR(255) NOT NULL,
@@ -85,9 +85,9 @@ INSERT INTO tipo_apontamento VALUES
 (NULL, 'AJUSTE - DOBRADOR DE BULA', '3', 'PRODUÇÃO', 1, false, true);
 
 CREATE TABLE IF NOT EXISTS maquina_apontamento(
-	id INT AUTO_INCREMENT,
-	idMaquina INT NOT NULL,
-    idTipoApontamento INT NOT NULL,
+	id BIGINT AUTO_INCREMENT,
+	idMaquina BIGINT NOT NULL,
+    idTipoApontamento BIGINT NOT NULL,
     FOREIGN KEY (idMaquina) REFERENCES maquina (id),
     FOREIGN KEY (idTipoApontamento) REFERENCES tipo_apontamento (id),
     CONSTRAINT UniqueMaquinaApontamento UNIQUE(idMaquina, idTipoApontamento),
@@ -111,7 +111,7 @@ INNER JOIN tipo_apontamento AS ta ON ma.idTipoApontamento = ta.id
 ORDER BY nomeMaquina ASC, descricaoApontamento ASC;
 
 CREATE TABLE IF NOT EXISTS usuario(
-	id INT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT,
 	matricula VARCHAR(10),
     usuario VARCHAR(30) NOT NULL UNIQUE, 
     senha VARCHAR(30) NOT NULL,
@@ -126,15 +126,15 @@ INSERT INTO usuario VALUES
 (NULL, '12345', 'beltrano', 'senha123', 'Beltrano Nogueira');
 
 CREATE TABLE IF NOT EXISTS ordem_producao(
-	id INT AUTO_INCREMENT,
+	id BIGINT AUTO_INCREMENT,
     numero_op VARCHAR(10) NOT NULL,
-    idEstrutura INT NOT NULL,
+    idEstrutura BIGINT NOT NULL,
     data_inicio DATETIME DEFAULT NULL,
     data_fim DATETIME DEFAULT NULL,
     quantidade_planejada INT NOT NULL,
     quantidade_realizada INT NOT NULL DEFAULT 0,
     tempo_hipotetico DOUBLE(4,3) NOT NULL DEFAULT 0,
-    idUsuario INT NOT NULL,
+    idUsuario BIGINT NOT NULL,
     FOREIGN KEY (idUsuario) REFERENCES usuario (id),
     FOREIGN KEY (idEstrutura) REFERENCES estrutura (id),
     CONSTRAINT PrimaryKeyOrdemProducao PRIMARY KEY (id),
@@ -165,11 +165,11 @@ INNER JOIN maquina AS m ON m.id = e.idMaquina
 INNER JOIN produto AS p ON p.id = e.idProduto;
 
 CREATE TABLE IF NOT EXISTS lancamento(
-    idOP INT NOT NULL,
-    idTipoApontamento INT NOT NULL,
+    idOP BIGINT NOT NULL,
+    idTipoApontamento BIGINT NOT NULL,
     data_inicio DATETIME NOT NULL,
     data_fim DATETIME DEFAULT NULL,
-    idUsuario INT NOT NULL,
+    idUsuario BIGINT NOT NULL,
 	CONSTRAINT PrimaryKeyLancamento PRIMARY KEY (idOP, data_inicio),
     FOREIGN KEY (idOP) REFERENCES ordem_producao (id),
     FOREIGN KEY (idUsuario) REFERENCES usuario (id)

@@ -13,23 +13,37 @@ import lombok.NoArgsConstructor;
 @Table(name = "estrutura")
 public class Estrutura {
 
-    @EmbeddedId
-    private EstruturaID estruturaID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "idMaquina")
+    private Maquina maquina;
+
+    @ManyToOne
+    @JoinColumn(name = "idProduto")
+    private Produto produto;
     private double velocidade;
 
     public Estrutura() {}
 
     public Estrutura(Produto produto, Maquina maquina, double velocidade) {
-        this.estruturaID = new EstruturaID(produto, maquina);
+        this.maquina = maquina;
+        this.produto = produto;
         this.velocidade = velocidade;
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
     public Produto getProduto() {
-        return this.estruturaID.getProduto();
+        return this.produto;
     }
 
     public Maquina getMaquina() {
-        return this.estruturaID.getMaquina();
+        return this.maquina;
     }
 
     public double getVelocidade() {
