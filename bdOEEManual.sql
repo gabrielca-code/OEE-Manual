@@ -12,12 +12,12 @@ CREATE TABLE IF NOT EXISTS produto(
 	id INT AUTO_INCREMENT,
     descricao VARCHAR(255) NOT NULL,
     codigo CHAR(7) UNIQUE NOT NULL,
-    PRIMARY KEY(id)
+    CONSTRAINT PrimaryKeyProduto PRIMARY KEY(id)
 );
 
 ALTER TABLE produto ADD COLUMN ativo BOOLEAN DEFAULT TRUE;
 
-select * from produto;
+SELECT * FROM produto;
 
 INSERT INTO produto VALUES
 (NULL, 'PARACETAMOL', '50037', TRUE),
@@ -29,30 +29,32 @@ CREATE TABLE IF NOT EXISTS maquina(
     descricao VARCHAR(255) NOT NULL,
     tag CHAR(11) NOT NULL,
     batelada BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY(id)
+    CONSTRAINT PrimaryKeyMaquina PRIMARY KEY(id)
 );
 
 ALTER TABLE maquina ADD COLUMN ativo BOOLEAN DEFAULT TRUE;
 
 INSERT INTO maquina VALUES
-(NULL, 'CAM 2', 'EBS-ECT-02', FALSE),
-(NULL, 'COP 10', 'MAS-COP-10', FALSE);
+(NULL, 'CAM 2', 'EBS-ECT-02', FALSE, FALSE),
+(NULL, 'COP 10', 'MAS-COP-10', FALSE, FALSE);
 
--- SELECT * FROM maquina;
+SELECT * FROM maquina;
 
 CREATE TABLE IF NOT EXISTS estrutura(
+	id INT AUTO_INCREMENT,
 	idProduto INT NOT NULL,
     idMaquina INT NOT NULL,
     velocidade DOUBLE(11,3) NOT NULL,
     FOREIGN KEY (idProduto) REFERENCES produto (id),
     FOREIGN KEY (idMaquina) REFERENCES maquina (id),
-    PRIMARY KEY(idProduto, idMaquina)
+    CONSTRAINT PrimaryKeyEstrutura PRIMARY KEY (id),
+    CONSTRAINT UniqueEstrutura UNIQUE(idProduto, idMaquina)
 );
 
 INSERT INTO estrutura VALUES
-(1, 1, 5000),
-(1, 2, 100000),
-(2, 2, 60000);
+(NULL, 1, 1, 5000),
+(NULL, 1, 2, 100000),
+(NULL, 2, 2, 60000);
 
 SELECT 
 	p.descricao AS descricaoProduto, 
@@ -74,7 +76,7 @@ CREATE TABLE IF NOT EXISTS tipo_apontamento(
     podeAlterar BOOLEAN DEFAULT TRUE,
     requerAssinatura BOOLEAN DEFAULT FALSE,
     afetaOEEEfetivo BOOLEAN DEFAULT TRUE,    
-    PRIMARY KEY(id)
+    CONSTRAINT PrimaryKeyTipoApontamento PRIMARY KEY(id)
 );
 
 INSERT INTO tipo_apontamento VALUES
@@ -83,19 +85,21 @@ INSERT INTO tipo_apontamento VALUES
 (NULL, 'AJUSTE - DOBRADOR DE BULA', '3', 'PRODUÇÃO', 1, false, true);
 
 CREATE TABLE IF NOT EXISTS maquina_apontamento(
+	id INT AUTO_INCREMENT,
 	idMaquina INT NOT NULL,
     idTipoApontamento INT NOT NULL,
     FOREIGN KEY (idMaquina) REFERENCES maquina (id),
     FOREIGN KEY (idTipoApontamento) REFERENCES tipo_apontamento (id),
-    PRIMARY KEY(idMaquina, idTipoApontamento)
+    CONSTRAINT UniqueMaquinaApontamento UNIQUE(idMaquina, idTipoApontamento),
+    CONSTRAINT PrimaryKeyMaquinaApontamento PRIMARY KEY(id)
 );
 
 INSERT INTO maquina_apontamento VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(2, 1),
-(2, 2);
+(NULL, 1, 1),
+(NULL, 1, 2),
+(NULL, 1, 3),
+(NULL, 2, 1),
+(NULL, 2, 2);
 
 SELECT 
 	m.descricao AS nomeMaquina,
@@ -107,37 +111,38 @@ INNER JOIN tipo_apontamento AS ta ON ma.idTipoApontamento = ta.id
 ORDER BY nomeMaquina ASC, descricaoApontamento ASC;
 
 CREATE TABLE IF NOT EXISTS usuario(
+	id INT AUTO_INCREMENT,
 	matricula VARCHAR(10),
     usuario VARCHAR(30) NOT NULL UNIQUE, 
     senha VARCHAR(30) NOT NULL,
     nome VARCHAR(255) NOT NULL,
-    PRIMARY KEY (matricula)
+    CONSTRAINT PrimaryKeyUsuario PRIMARY KEY (id),
+    CONSTRAINT UniqueUsuario UNIQUE (matricula)
 );
 
 INSERT INTO usuario VALUES
-('99999', 'gabrielca', 'senha123', 'Gabriel de Carvalho Antunes'),
-('98760', 'fulano', 'senha123', 'Fulano da Silva'),
-('12345', 'beltrano', 'senha123', 'Beltrano Nogueira');
+(NULL, '99999', 'gabrielca', 'senha123', 'Gabriel de Carvalho Antunes'),
+(NULL, '98760', 'fulano', 'senha123', 'Fulano da Silva'),
+(NULL, '12345', 'beltrano', 'senha123', 'Beltrano Nogueira');
 
 CREATE TABLE IF NOT EXISTS ordem_producao(
 	id INT AUTO_INCREMENT,
     numero_op VARCHAR(10) NOT NULL,
-    idMaquina INT NOT NULL,
-    idProduto INT NOT NULL,
+    idEstrutura INT NOT NULL,
     data_inicio DATETIME DEFAULT NULL,
     data_fim DATETIME DEFAULT NULL,
     quantidade_planejada INT NOT NULL,
     quantidade_realizada INT NOT NULL DEFAULT 0,
     tempo_hipotetico DOUBLE(4,3) NOT NULL DEFAULT 0,
-    idUsuario VARCHAR(10) NOT NULL,
-    FOREIGN KEY (idUsuario) REFERENCES usuario (matricula),
-    FOREIGN KEY (idMaquina, idProduto) REFERENCES estrutura (idMaquina, idProduto),
-    PRIMARY KEY (id),
-    CONSTRAINT CHK_quantidadePlanejada CHECK (quantidade_planejada > 0)
+    idUsuario INT NOT NULL,
+    FOREIGN KEY (idUsuario) REFERENCES usuario (id),
+    FOREIGN KEY (idEstrutura) REFERENCES estrutura (id),
+    CONSTRAINT PrimaryKeyOrdemProducao PRIMARY KEY (id),
+    CONSTRAINT CheckQuantidadePlanejada CHECK (quantidade_planejada > 0)
 );
 
-INSERT INTO ordem_producao(numero_op, idMaquina, idProduto, quantidade_planejada, idUsuario) VALUES
-('7776669', 1, 1, 100000, '99999');
+INSERT INTO ordem_producao(numero_op, idEstrutura, quantidade_planejada, idUsuario) VALUES
+('7776669', 1, 100000, 1);
 
 SELECT * FROM ordem_producao;
 
@@ -155,7 +160,7 @@ SELECT
     u.nome AS NomeUsuario
 FROM ordem_producao AS op
 INNER JOIN usuario AS u ON u.matricula = op.idUsuario
-INNER JOIN estrutura AS e ON e.idMaquina = op.idMaquina AND e.idProduto = op.idMaquina
+INNER JOIN estrutura AS e ON e.id = op.idEstrutura
 INNER JOIN maquina AS m ON m.id = e.idMaquina
 INNER JOIN produto AS p ON p.id = e.idProduto;
 
@@ -164,14 +169,14 @@ CREATE TABLE IF NOT EXISTS lancamento(
     idTipoApontamento INT NOT NULL,
     data_inicio DATETIME NOT NULL,
     data_fim DATETIME DEFAULT NULL,
-    idUsuario VARCHAR(10) NOT NULL,
-	PRIMARY KEY (idOP, data_inicio),
+    idUsuario INT NOT NULL,
+	CONSTRAINT PrimaryKeyLancamento PRIMARY KEY (idOP, data_inicio),
     FOREIGN KEY (idOP) REFERENCES ordem_producao (id),
-    FOREIGN KEY (idUsuario) REFERENCES usuario (matricula)
+    FOREIGN KEY (idUsuario) REFERENCES usuario (id)
 );
 
 INSERT INTO lancamento (idOP, idTipoApontamento, data_inicio, idUsuario) VALUES
-(1, 1, '2024-02-13 10:00', '99999');
+(1, 1, '2024-02-13 10:00', 1);
 
 SELECT 
 	op.numero_op AS OP,
@@ -185,7 +190,7 @@ SELECT
     u.nome AS NomeUsuario
 FROM lancamento AS l
 INNER JOIN ordem_producao AS op ON l.idOP = op.id
-INNER JOIN estrutura AS e ON op.idMaquina = e.idMaquina AND op.idProduto = e.idProduto
+INNER JOIN estrutura AS e ON op.idEstrutura = e.id
 INNER JOIN maquina AS m ON m.id = e.idMaquina
 INNER JOIN produto AS p ON p.id = e.idProduto
 INNER JOIN usuario AS u ON l.idUsuario = u.matricula
