@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 @Entity(name = "Produto")
 @Table(name = "produto")
-@EqualsAndHashCode(of = "id")
 public class Produto {
 
     @Id

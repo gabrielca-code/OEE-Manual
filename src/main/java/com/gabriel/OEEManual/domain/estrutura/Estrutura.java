@@ -17,12 +17,12 @@ public class Estrutura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "idMaquina")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idMaquina", referencedColumnName = "id")
     private Maquina maquina;
 
-    @ManyToOne
-    @JoinColumn(name = "idProduto")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idProduto", referencedColumnName = "id")
     private Produto produto;
     private double velocidade;
 
@@ -50,4 +50,7 @@ public class Estrutura {
         return this.velocidade;
     }
 
+    public void editar(EstruturaEditarDTO dados) {
+        this.velocidade = dados.velocidade();
+    }
 }
